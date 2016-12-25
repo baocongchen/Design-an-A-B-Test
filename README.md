@@ -49,3 +49,30 @@ To use both gross conversion and net conversion as evaluation metrics, we need 3
 There are 40000 pageviews per day, and I want to direct 50% of the traffic to the experiment, so the number of days needed to perform the experiment is `685325/20000 = 34.3` days. <br>
 
 ## Experiment Analysis
+
+1. Sanity Checks
+
+***Page Views***
+
+| Experimental group | Control group |
+|:------------------ | ------------- |
+| 344660 | 345543 |
+
+Fair experiment should gives us equal proportion between number of cookies in control and experiment groups, so I use 0.5 proportion as my point estimate.
+- Standard Deviation = sqrt(0.5*0.5/(344660 + 345543)) = 0.0006018
+- Margin of Error = 0.0006018*1.96 = 0.001179528
+- Confidence Interval = [0.498820472, 0.501179528]
+- Observed value = 345543/(344660 + 345543) = 0.50064
+The observed value falls within the confidence interval, so it passes the sanity check.
+
+***Clicks***
+
+| Experimental group | Control group |
+|:------------------ | ------------- |
+| 28235 | 28378 |
+
+- Standard Deviation = sqrt(0.5*0.5/(28378 + 28235)) = 0.0021014
+- Margin of Error = 0.0021014*1.96 = 0.004119
+- Confidence Interval = [0.495881, 0.504119]
+- Observed value = 28378/(28378 + 28325) = 0.5005
+The observed value falls within the confidence interval, so it passes the sanity check.
