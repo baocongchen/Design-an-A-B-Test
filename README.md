@@ -18,7 +18,7 @@ Table of baseline values:
 
 2. Calculating Standard Deviation: <br>
 
-**Apply the formula below** 
+**Apply the formula below**  <br>
 `sqrt(p*(1-p)*(N/n)/rate)`
 
 + Gross Conversion: 0.02023060414
@@ -41,8 +41,10 @@ Then I use Evan's A/B Tools to calculate the sample size for each evaluation met
 It takes too long to get 39,115 enrolls to perform A/B test, so I decide to use just gross conversion and net conversion as evaluation metrics.<br>
 
 `Number of Pageviews = Clicks on "Start free trial" / Click-through-probability on "Start free trial"` <br>
-Number of pageviews in gross conversion case = 25,835/0.08 = 322,937.5 <br>
-Number of pageviews in net conversion case = 27,413/0.08 = 342,662.5 <br>
+
+- Number of pageviews in gross conversion case = 25,835/0.08 = 322,937.5 <br>
+- Number of pageviews in net conversion case = 27,413/0.08 = 342,662.5 <br>
+
 To use both gross conversion and net conversion as evaluation metrics, we need 342,662.5 pageviews, so the total number of pageviews we need for both experiment & control group are `342,662.5*2=685325` <br>
 
 4. Choosing Duration & Exposure: <br>
@@ -50,7 +52,7 @@ There are 40000 pageviews per day, and I want to direct 50% of the traffic to th
 
 ## Experiment Analysis
 
-1. Sanity Checks
+### 1. Sanity Checks
 
 ***Page Views***
 
@@ -76,3 +78,5 @@ The observed value falls within the confidence interval, so it passes the sanity
 - Confidence Interval = [0.495881, 0.504119]
 - Observed value = 28378/(28378 + 28325) = 0.5005
 The observed value falls within the confidence interval, so it passes the sanity check.
+
+### 2. Effect Size Testss
