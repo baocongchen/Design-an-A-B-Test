@@ -59,7 +59,7 @@ It takes too long to get 39,115 enrolls to perform A/B test, so I decide to use 
 To use both gross conversion and net conversion as evaluation metrics, we need 342,662.5 pageviews, so the total number of pageviews we need for both experiment & control group are `342,662.5*2=685325` <br>
 
 4. Choosing Duration vs Exposure: <br>
-There are 40000 pageviews per day, and I want to direct 50% of the traffic to the experiment, so the number of days needed to perform the experiment is `685325/20000 = 34.3` days. <br>
+There are 40000 pageviews per day, and I want to direct 50% of the traffic to the experiment, so the number of days needed to perform the experiment is `685325/20000 = 34.3` days. This duration is not too long, so it is reasonable to perform this A/B test. One of the risk we may have is that 25% of those traffic in experimental group may be discouraged to click on "Start free trial" due to its new design.<br>
 
 ## Experiment Analysis
 
@@ -87,7 +87,7 @@ The observed value falls within the confidence interval, so it passes the sanity
 - Standard Deviation = sqrt(0.5*0.5/(28378 + 28235)) = 0.0021014
 - Margin of Error = 0.0021014*1.96 = 0.004119
 - Confidence Interval = [0.495881, 0.504119]
-- Observed value = 28378/(28378 + 28325) = 0.5005
+- Observed value = 28378/(28378 + 28325) = 0.5005 <br>
 The observed value falls within the confidence interval, so it passes the sanity check.
 
 ### 2. Effect Size Tests
@@ -100,41 +100,66 @@ The observed value falls within the confidence interval, so it passes the sanity
 | Gross Conversion | 0.19832 | 0.218875 |
 | Net Conversion | 0.11269 | 0.11756 |
 
-`p_pooled = (X_exp + X_col) / (N_exp + N_col)`
-`se_pooled = sqrt(p_pooled * (1 - p_pooled) * (1/N_exp + 1/N_col))`
-`p_diff = X_exp/N_exp - X_col/N_col`
+`p_pooled = (X_exp + X_col) / (N_exp + N_col) <br>
+se_pooled = sqrt(p_pooled * (1 - p_pooled) * (1/N_exp + 1/N_col)) <br>
+p_diff = X_exp/N_exp - X_col/N_col`
 
 I apply the above formula to calculate the lower bound and upper bound of the evaluation metrics.
 
 #### Gross Conversion:
 
-`p_pooled = 0.2086
-se_pooled = 0.00437
-p_diff = -0.020555
-margin_err = 0.00437*1.96 = 0.0085652
-lower bound = p_diff - margin_err = -0.0291
+`p_pooled = 0.2086 <br>
+se_pooled = 0.00437 <br>
+p_diff = -0.020555 <br>
+margin_err = 0.00437*1.96 = 0.0085652 <br>
+lower bound = p_diff - margin_err = -0.0291 <br>
 upper bound = p_diff + margin_err = -0.01198`
 
 Since the interval does not contain 0, it is statistically significant, and the lower bound of the confidence interval is more negative than our minimum detectable effect, so it is practically significant.
 
 #### Net Conversion:
 
-`p_pooled = 0.11512
-se_pooled = 0.003434
-p_diff = -0.00487
-margin_err = 0.003434*1.96 = 0.00673
-lower bound = p_diff - margin_err = -0.0116
-upper bound = p_diff + margin_err = 0.00186`
+`p_pooled = 0.11512 <br>
+se_pooled = 0.003434 <br>
+p_diff = -0.00487 <br>
+margin_err = 0.003434*1.96 = 0.00673 <br>
+lower bound = p_diff - margin_err = -0.0116 <br>
+upper bound = p_diff + margin_err = 0.00186` 
 
 Since the interval includes 0, it is not statistically significant. The lower bound is less negative than our minimum detectable effect and therefore not practically significant.
 
 ### 3. Sign Tests
 
-Gross conversion has 4 successes out of 23 days, so with the probability of "success" of 0.5, the two tailed p-value is 0.0026 which statistically significant
-Net conversion has 10 successes out of 23 days, so with the probability of "success" of 0.5, the two tailed p-value is 0.6776 which is not statistically significant
+Gross conversion has 4 successes out of 23 days, so with the probability of "success" of 0.5, the two tailed p-value is 0.0026 which statistically significant <br>
+Net conversion has 10 successes out of 23 days, so with the probability of "success" of 0.5, the two tailed p-value is 0.6776 which is not statistically significant 
 
-## Summary
+### Summary
 
-I do not use Bonferroni correction, because the evaluation metrics are positively correlated, so the Bonferroni correction can be conservative to it.
-
+I do not use Bonferroni correction, because the evaluation metrics are positively correlated, so the Bonferroni correction can be conservative.
+<br>
 The results I get from both effective size tests and sign tests show that the change will practically and significantly reduce the gross conversion, but will not practically and significantly affect the net conversion rate.
+
+### Recommendation
+
+Based on the results that I get, I think the new design for "Start free trial" should not be used. The gross conversion metric is both statistically and practically significant, which means the new design has successfully increased the number of users enrolling in the program. However the net conversion rate is neither statiscally nor practically significant, which means the new design has failed to increase the number of payments. We do not want the new design to impact the revenue; that is the reason why we should not launch this new design.
+
+## Follow-Up Experiment
+
+We want to make some changes that can positively impact the net conversion rate. First, we need to detect the patterns of those who are likely to drop the course during the free trial period; then we can try one of the solution below:
+
+- Send them customized emails based on individual cases. 
+
+OR 
+
+- Give them a free one-on-one coaching session.
+
+OR 
+
+- Have them finish an easy project that helps them know the skills they can get from the program.
+
+We use number of cookies as unit of diversion and net conversion rate as an evaluation metric. Then we compare the results from experimental group and control group to see whether we should apply that solution or reject it. 
+
+## Reference
+- Ideate and Hypothesize https://help.optimizely.com/Ideate_and_Hypothesize
+- Evan's A/B Tools http://www.evanmiller.org/ab-testing/sample-size.html
+- GraphPad Software http://graphpad.com/quickcalcs/binomial1.cfm
