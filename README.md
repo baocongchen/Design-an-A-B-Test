@@ -107,14 +107,14 @@ p_diff = X_exp/N_exp - X_col/N_col`
 I apply the above formula to calculate the lower bound and upper bound of the evaluation metrics.
 
 #### Gross Conversion:
-
-`p_pooled = 0.2086 <br>
-se_pooled = 0.00437 <br>
-p_diff = -0.020555 <br>
-margin_err = 0.00437*1.96 = 0.0085652 <br>
-lower bound = p_diff - margin_err = -0.0291 <br>
-upper bound = p_diff + margin_err = -0.01198`
-
+<code>
+p_pooled = 0.2086 
+se_pooled = 0.00437
+p_diff = -0.020555
+margin_err = 0.00437*1.96 = 0.0085652
+lower bound = p_diff - margin_err = -0.0291
+upper bound = p_diff + margin_err = -0.01198
+</code>
 Since the interval does not contain 0, it is statistically significant, and the lower bound of the confidence interval is more negative than our minimum detectable effect, so it is practically significant.
 
 #### Net Conversion:
