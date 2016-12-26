@@ -100,38 +100,43 @@ The observed value falls within the confidence interval, so it passes the sanity
 | Gross Conversion | 0.19832 | 0.218875 |
 | Net Conversion | 0.11269 | 0.11756 |
 
-`p_pooled = (X_exp + X_col) / (N_exp + N_col) 
+`p_pooled = (X_exp + X_col) / (N_exp + N_col)` 
 
-se_pooled = sqrt(p_pooled * (1 - p_pooled) * (1/N_exp + 1/N_col))
+`se_pooled = sqrt(p_pooled * (1 - p_pooled) * (1/N_exp + 1/N_col))`
 
-p_diff = X_exp/N_exp - X_col/N_col`
+`p_diff = X_exp/N_exp - X_col/N_col`
 
 I apply the above formula to calculate the lower bound and upper bound of the evaluation metrics.
 
 #### Gross Conversion:
-<code>
-p_pooled = 0.2086 
 
-se_pooled = 0.00437
+`p_pooled = 0.2086`
 
-p_diff = -0.020555
+`se_pooled = 0.00437`
 
-margin_err = 0.00437*1.96 = 0.0085652
+`p_diff = -0.020555`
 
-lower bound = p_diff - margin_err = -0.0291
+`margin_err = 0.00437*1.96 = 0.0085652`
 
-upper bound = p_diff + margin_err = -0.01198
-</code>
+`lower bound = p_diff - margin_err = -0.0291`
+
+`upper bound = p_diff + margin_err = -0.01198`
+
 Since the interval does not contain 0, it is statistically significant, and the lower bound of the confidence interval is more negative than our minimum detectable effect, so it is practically significant.
 
 #### Net Conversion:
 
-`p_pooled = 0.11512 <br>
-se_pooled = 0.003434 <br>
-p_diff = -0.00487 <br>
-margin_err = 0.003434*1.96 = 0.00673 <br>
-lower bound = p_diff - margin_err = -0.0116 <br>
-upper bound = p_diff + margin_err = 0.00186` 
+`p_pooled = 0.11512`
+
+`se_pooled = 0.003434`
+
+`p_diff = -0.00487`
+
+`margin_err = 0.003434*1.96 = 0.00673`
+
+`lower bound = p_diff - margin_err = -0.0116`
+
+`upper bound = p_diff + margin_err = 0.00186` 
 
 Since the interval includes 0, it is not statistically significant. The lower bound is less negative than our minimum detectable effect and therefore not practically significant.
 
