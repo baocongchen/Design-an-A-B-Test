@@ -9,17 +9,21 @@
 The practical significance boundary for each metric, that is, the difference that would have to be observed before that was a meaningful change for the business, is given in parentheses. All practical significance boundaries are given as absolute changes.
 Any place "unique cookies" are mentioned, the uniqueness is determined by day. (That is, the same cookie visiting on different days would be counted twice.) User-ids are automatically unique since the site does not allow the same user-id to enroll twice.
 
-- Number of cookies: That is, number of unique cookies to view the course overview page. (dmin=3000)
-- Number of user-ids: That is, number of users who enroll in the free trial. (dmin=50)
-- Number of clicks: That is, number of unique cookies to click the "Start free trial" button (which happens before the free trial screener is trigger). (dmin=240)
-- Click-through-probability: That is, number of unique cookies to click the "Start free trial" button divided by number of unique cookies to view the course overview page. (dmin=0.01)
-- Gross conversion: That is, number of user-ids to complete checkout and enroll in the free trial divided by number of unique cookies to click the "Start free trial" button. (dmin= 0.01)
-- Retention: That is, number of user-ids to remain enrolled past the 14-day boundary (and thus make at least one payment) divided by number of user-ids to complete checkout. (dmin=0.01)
-- Net conversion: That is, number of user-ids to remain enrolled past the 14-day boundary (and thus make at least one payment) divided by the number of unique cookies to click the "Start free trial" button. (dmin= 0.0075)
++ Invariant metrics: Number of cookies, Number of clicks.
 
-+ Invariant metrics: Number of cookies, Number of clicks
++ Evaluation metrics: Gross conversion, Retention, Net conversion.
 
-+ Evaluation metrics: Gross conversion, Retention, Net conversion
+- Number of cookies: That is, number of unique cookies to view the course overview page. (dmin=3000). This can be used as an invariant metric because the number of visitors is not impacted by the change of "Start free trial".  
+- Number of user-ids: That is, number of users who enroll in the free trial. (dmin=50). This should not be used as an evaluation metric because the number of users can be different between the control group and experimental group .
+- Number of clicks: That is, number of unique cookies to click the "Start free trial" button (which happens before the free trial screener is trigger). (dmin=240). This can be used as an invariant metric because clicks happen before visitors see the experiment.
+- Click-through-probability: That is, number of unique cookies to click the "Start free trial" button divided by number of unique cookies to view the course overview page. (dmin=0.01). This can be used as an invariant metric because clicks happen before visitors see the experiment.
+- Gross conversion: That is, number of user-ids to complete checkout and enroll in the free trial divided by number of unique cookies to click the "Start free trial" button. (dmin= 0.01). This should not be used as an invariant metric because the number of visitors enrolled in the program is affected by the experiment. However, it is a good evaluation metric because it reflects the impact the experiment has on the number of students enrolled in the program.
+- Retention: That is, number of user-ids to remain enrolled past the 14-day boundary (and thus make at least one payment) divided by number of user-ids to complete checkout. (dmin=0.01). This should not be used as an invariant metric because the number of visitors remained enrolled  after 14 day trial is impacted by the experiment. On the other hand, this is a good evaluation metric because it reflects the impact the experiment has on the number of students remained enrolled in the program after 14 day trial. 
+- Net conversion: That is, number of user-ids to remain enrolled past the 14-day boundary (and thus make at least one payment) divided by the number of unique cookies to click the "Start free trial" button. (dmin= 0.0075). This should not be used as an invariant metric because the number of visitors remained enrolled  after 14 day trial is impacted by the experiment. On the other hand, this is a good evaluation metric because it reflects the impact the experiment has on the number of students remained enrolled in the program after 14 day trial.
+
+Invariant metrics are metrics that are not expected to change between the control group and experimental group; therefore, they used in sanity checks. In this case, number of cookies and number of clicks are selected as invariant metrics because they are not impacted by the new design of "Start free trial". On the other hand, evaluation metrics are subject to change between the control group and experimental group, so they are used in effective size tests and sign tests to measure the impact of a change. <br>
+I will take a look at the gross conversion metric and net conversion metric. The gross conversion metric indicates whether or not we successfully lower the costs by introducing the screener, and the net conversion metric indicates how the change affects the revenues. <br>
+In order to launch the experiment, the gross conversion metric needs to have a practically significant decrease, and the net conversion metric needs to have a statistically significant increase.
 
 Table of baseline values:
 
@@ -29,14 +33,15 @@ Table of baseline values:
 
 2. Calculating Standard Deviation: <br>
 
-**Apply the formula below**  <br>
+**Apply the formula below** <br>
 `sqrt(p*(1-p)*(N/n)/rate)`
-
 + Gross Conversion: 0.02023060414
 
 + Retention: 0.05494901218
 
 + Net Conversion: 0.01560154458
+
+Both gross conversion and net conversion use number of cookies as denominator, which is also unit of diversion. Therefore the analytic estimate is comparable to the emperical estimate.
 
 3. Calculating Number of Pageviews: <br>
 I do not use Bonferroni correction in the analysis phase because the metrics are positively correlated, so Bonferroni correction can be conservative in this case. <br>
@@ -54,12 +59,12 @@ It takes too long to get 39,115 enrolls to perform A/B test, so I decide to use 
 `Number of Pageviews = Clicks on "Start free trial" / Click-through-probability on "Start free trial"` <br>
 
 - Number of pageviews in gross conversion case = 25,835/0.08 = 322,937.5 <br>
-- Number of pageviews in net conversion case = 27,413/0.08 = 342,662.5 <br>
+- Number of pageviews in net conversion case = 27,413/0.08 = 342,662.5
 
 To use both gross conversion and net conversion as evaluation metrics, we need 342,662.5 pageviews, so the total number of pageviews we need for both experiment & control group are `342,662.5*2=685325` <br>
 
 4. Choosing Duration vs Exposure: <br>
-There are 40000 pageviews per day, and I want to direct 50% of the traffic to the experiment, so the number of days needed to perform the experiment is `685325/20000 = 34.3` days. This duration is not too long, so it is reasonable to perform this A/B test. One of the risk we may have is that 25% of those traffic in experimental group may be discouraged to click on "Start free trial" due to its new design.<br>
+There are 40000 pageviews per day, and I want to direct 50% of the traffic to the experiment, so the number of days needed to perform the experiment is `685325/20000 = 34.3` days. This duration is not too long, so it is reasonable to perform A/B test. One of the risk we may have is that if new design is bad, the number of enrolls from 25% of those traffic in experimental group may decrease. However, this will not affect the revenue coming from existing users. Moreover, the experiment does not involve sensitive data, so it is not extremely risky to perform this test<br>
 
 ## Experiment Analysis
 
@@ -147,29 +152,25 @@ Net conversion has 10 successes out of 23 days, so with the probability of "succ
 
 ### Summary
 
-I do not use Bonferroni correction, because the evaluation metrics are positively correlated, so the Bonferroni correction can be conservative.
+I do not use Bonferroni correction. We should use Bonferroni correction only if we were to launch the experiment when any metric would match our expectations because we want to increase the risk of Type I error. In this case, we look for a decrease in gross conversion and for a no decrease in the net conversion, so the use of Bonferroni correction is not relevant.
 <br>
 The results I get from both effective size tests and sign tests show that the change will practically and significantly reduce the gross conversion, but will not practically and significantly affect the net conversion rate.
 
 ### Recommendation
 
-Based on the results that I get, I think the new design for "Start free trial" should not be used. The gross conversion metric is both statistically and practically significant, which means the new design has successfully increased the number of users enrolling in the program. However the net conversion rate is neither statiscally nor practically significant, which means the new design has failed to increase the number of payments. We do not want the new design to impact the revenue; that is the reason why we should not launch this new design.
+Based on the results that I get, I think the new design for "Start free trial" should not be used. The gross conversion metric is negative, statistically and practically significant, which means the new design has successfully decreased the number of users that cancel early. However the net conversion rate is neither statiscally nor practically significant, which means the new design has failed to increase the number of paid users. The confident interval also includes negative range which indicates that the experiment may negatively impact the revenue. This is the reason why we should not launch this experiment.
 
 ## Follow-Up Experiment
 
-We want to make some changes that can positively impact the net conversion rate. First, we need to detect the patterns of those who are likely to drop the course during the free trial period; then we can try one of the solution below:
+We want to make some changes that can positively impact the net conversion rate. First, we need to detect the patterns of those who are likely to cancel the course during the free trial period; then we approach them and give them a free one-on-one coaching session. I think students who cancel early tend to be either lack of experience with online learning or lack of motivation to keep going forward, so it is important for us to identify them, actively approach and give them orientation, and encourage them. I believe doing this can increase retention rate, so I would like to conduct an A/B test to verify my idea. I will randomly assign 50% of the visitors to control group and the other 50% to experimental group. 
 
-- Send them customized emails based on individual cases. 
+`Null hypothesis: free one-on-one coaching session does not increase retention by a practically significant amount.`
 
-OR 
+`Unit of diversion: user-id. Because a free one-on-one coaching session is given not to visitors but to those who are in the free trial period, and we want the experiment to be stable, that is we want to make sure only those in experimental group receive a free one-on-one coaching session.` 
 
-- Give them a free one-on-one coaching session.
+`Evaluation metric: net conversion. If the net conversion is practically and statistically significant, we can conclude that the launch of the experiment will increase the revenue.`
 
-OR 
-
-- Have them finish an easy project that helps them know the skills they can get from the program.
-
-We use number of cookies as unit of diversion and net conversion rate as an evaluation metric. Then we compare the results from experimental group and control group to see whether we should apply that solution or reject it. 
+Then we compare the results from experimental group and control group to see whether we should luanch the experiment or not. If retention is positive and practically significant, we can launch the experiment.
 
 ## Reference
 - Ideate and Hypothesize https://help.optimizely.com/Ideate_and_Hypothesize
