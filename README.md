@@ -13,17 +13,19 @@ Any place "unique cookies" are mentioned, the uniqueness is determined by day. (
 
 + Evaluation metrics: Gross conversion, Retention, Net conversion.
 
-- Number of cookies: That is, number of unique cookies to view the course overview page. (dmin=3000). This can be used as an invariant metric because the number of visitors is not impacted by the change of "Start free trial".  
-- Number of user-ids: That is, number of users who enroll in the free trial. (dmin=50). This should not be used as an evaluation metric because the number of users can be different between the control group and experimental group .
-- Number of clicks: That is, number of unique cookies to click the "Start free trial" button (which happens before the free trial screener is trigger). (dmin=240). This can be used as an invariant metric because clicks happen before visitors see the experiment.
-- Click-through-probability: That is, number of unique cookies to click the "Start free trial" button divided by number of unique cookies to view the course overview page. (dmin=0.01). This can be used as an invariant metric because clicks happen before visitors see the experiment.
-- Gross conversion: That is, number of user-ids to complete checkout and enroll in the free trial divided by number of unique cookies to click the "Start free trial" button. (dmin= 0.01). This should not be used as an invariant metric because the number of visitors enrolled in the program is affected by the experiment. However, it is a good evaluation metric because it reflects the impact the experiment has on the number of students enrolled in the program.
-- Retention: That is, number of user-ids to remain enrolled past the 14-day boundary (and thus make at least one payment) divided by number of user-ids to complete checkout. (dmin=0.01). This should not be used as an invariant metric because the number of visitors remained enrolled  after 14 day trial is impacted by the experiment. On the other hand, this is a good evaluation metric because it reflects the impact the experiment has on the number of students remained enrolled in the program after 14 day trial. 
-- Net conversion: That is, number of user-ids to remain enrolled past the 14-day boundary (and thus make at least one payment) divided by the number of unique cookies to click the "Start free trial" button. (dmin= 0.0075). This should not be used as an invariant metric because the number of visitors remained enrolled  after 14 day trial is impacted by the experiment. On the other hand, this is a good evaluation metric because it reflects the impact the experiment has on the number of students remained enrolled in the program after 14 day trial.
+Invariant metrics are metrics that are not expected to change between the control group and experimental group; therefore, they used in sanity checks. In this case, number of cookies and number of clicks are selected as invariant metrics because they are not impacted by the new design of "Start free trial". On the other hand, evaluation metrics are subject to change between the control group and experimental group, so they are used in effective size tests and sign tests to measure the impact of a change. The details of how I choose the metrics is presented below:
 
-Invariant metrics are metrics that are not expected to change between the control group and experimental group; therefore, they used in sanity checks. In this case, number of cookies and number of clicks are selected as invariant metrics because they are not impacted by the new design of "Start free trial". On the other hand, evaluation metrics are subject to change between the control group and experimental group, so they are used in effective size tests and sign tests to measure the impact of a change. <br>
+- Number of cookies: That is, number of unique cookies to view the course overview page. (dmin=3000). *This can be used as an invariant metric because the number of visitors is not impacted by the change of "Start free trial".*  
+- Number of user-ids: That is, number of users who enroll in the free trial. (dmin=50). *This is not a good invariant metric because it is impacted by the experiment. This should not be used as an evaluation metric either because the number of users can be different between the control group and experimental group thus can skew the result.*
+- Number of clicks: That is, number of unique cookies to click the "Start free trial" button (which happens before the free trial screener is trigger). (dmin=240). *This can be used as an invariant metric because clicks happen before visitors see the experiment, thus is not impacted from the experiment. For the same reason, it should not be used as an evaluation metric because we want to measure how the experiment impacts the metric.*
+- Click-through-probability: That is, number of unique cookies to click the "Start free trial" button divided by number of unique cookies to view the course overview page. (dmin=0.01). *This should not be used as an evaluation metric because we want to measure how the experiment impacts the metric. While the metric can be used as an invariant metric because clicks happen before visitors see the experiment, it should not be used in this A/B test because its unit of measurement is not count but rate, that is the unit is different from that of the other two invariant metrics; the metric is based on clicks, so number of click instead of click-through-probability is a better choice for this A/B test.*
+- Gross conversion: That is, number of user-ids to complete checkout and enroll in the free trial divided by number of unique cookies to click the "Start free trial" button. (dmin= 0.01). *This should not be used as an invariant metric because the number of visitors enrolled in the program is affected by the experiment. However, it is a good evaluation metric because it reflects the impact the experiment has on the number of students enrolled in the program.*
+- Retention: That is, number of user-ids to remain enrolled past the 14-day boundary (and thus make at least one payment) divided by number of user-ids to complete checkout. (dmin=0.01). *This should not be used as an invariant metric because the number of visitors remained enrolled after 14 day trial is impacted by the experiment. On the other hand, this can be used as an evaluation metric because it reflects the impact the experiment has on the number of students remained enrolled in the program after 14 day trial.*
+- Net conversion: That is, number of user-ids to remain enrolled past the 14-day boundary (and thus make at least one payment) divided by the number of unique cookies to click the "Start free trial" button. (dmin= 0.0075). *This should not be used as an invariant metric because the number of visitors remained enrolled  after 14 day trial is impacted by the experiment. On the other hand, this is a good evaluation metric because it reflects the impact the experiment has on the number of students remained enrolled in the program after 14 day trial.*
+
+<br>
 I will take a look at the gross conversion metric and net conversion metric. The gross conversion metric indicates whether or not we successfully lower the costs by introducing the screener, and the net conversion metric indicates how the change affects the revenues. <br>
-In order to launch the experiment, the gross conversion metric needs to have a practically significant decrease, and the net conversion metric needs to have a statistically significant increase.
+In order to launch the experiment, we have to make sure that it will reduce enrollments by unprepared students **and** without signficantly reducing the number of students who complete the free trial and make at least one payment. That is the gross conversion metric needs to have a practically significant decrease, and the net conversion metric should not have a statistically significant decrease.
 
 Table of baseline values:
 
@@ -41,10 +43,10 @@ Table of baseline values:
 
 + Net Conversion: 0.01560154458
 
-Both gross conversion and net conversion use number of cookies as denominator, which is also unit of diversion. Therefore the analytic estimate is comparable to the emperical estimate.
+Both gross conversion and net conversion use number of cookies as denominator, which is also unit of diversion. Therefore the analytic estimate is comparable to the emperical estimate. Retention does not have the same unit of diversion; its denominator is user-id, so its analytic estimate will not match its emperical estimate. 
 
 3. Calculating Number of Pageviews: <br>
-I do not use Bonferroni correction in the analysis phase because the metrics are positively correlated, so Bonferroni correction can be conservative in this case. <br>
+I do not use Bonferroni correction in the analysis phase, because according to the hypothesis, we look for a decrease in gross conversion and for a no decrease in the net conversion, so the use of Bonferroni correction is not relevant.<br>
 Then I use Evan's A/B Tools to calculate the sample size for each evaluation metric <br>
 **alpha=0.05, beta=0.2**
 
@@ -54,7 +56,7 @@ Then I use Evan's A/B Tools to calculate the sample size for each evaluation met
 
 - Net conversion (dmin=0.75%, baseline conversion rate=0.1093125): 27,413 clicks on "Start free trial"
 
-It takes too long to get 39,115 enrolls to perform A/B test, so I decide to use just gross conversion and net conversion as evaluation metrics.<br>
+It takes too long to get 39,115 enrolls (approximately 60 days if 100% of the traffic is used) to perform A/B test, so I decide to use just gross conversion and net conversion as evaluation metrics.<br>
 
 `Number of Pageviews = Clicks on "Start free trial" / Click-through-probability on "Start free trial"` <br>
 
@@ -64,7 +66,7 @@ It takes too long to get 39,115 enrolls to perform A/B test, so I decide to use 
 To use both gross conversion and net conversion as evaluation metrics, we need 342,662.5 pageviews, so the total number of pageviews we need for both experiment & control group are `342,662.5*2=685325` <br>
 
 4. Choosing Duration vs Exposure: <br>
-There are 40000 pageviews per day, and I want to direct 50% of the traffic to the experiment, so the number of days needed to perform the experiment is `685325/20000 = 34.3` days. This duration is not too long, so it is reasonable to perform A/B test. One of the risk we may have is that if new design is bad, the number of enrolls from 25% of those traffic in experimental group may decrease. However, this will not affect the revenue coming from existing users. Moreover, the experiment does not involve sensitive data, so it is not extremely risky to perform this test<br>
+There are 40000 pageviews per day, and I want to divert 60% of the traffic to the experiment, so the number of days needed to perform the experiment is 29 days. This duration is not too long, so it is reasonable to perform A/B test. One of the risk we may have is that if new design is bad, the number of enrolls from 30% of those traffic in experimental group may decrease. However, this will not affect the revenue coming from existing users. Moreover, the experiment neither involves sensitive data nor harms anyone, so it is not extremely risky to perform this test<br>
 
 ## Experiment Analysis
 
@@ -162,15 +164,17 @@ Based on the results that I get, I think the new design for "Start free trial" s
 
 ## Follow-Up Experiment
 
-We want to make some changes that can positively impact the net conversion rate. First, we need to detect the patterns of those who are likely to cancel the course during the free trial period; then we approach them and give them a free one-on-one coaching session. I think students who cancel early tend to be either lack of experience with online learning or lack of motivation to keep going forward, so it is important for us to identify them, actively approach and give them orientation, and encourage them. I believe doing this can increase retention rate, so I would like to conduct an A/B test to verify my idea. I will randomly assign 50% of the visitors to control group and the other 50% to experimental group. 
+We want to make some changes that can positively impact the net conversion rate. First, we need to detect the patterns of those who are likely to cancel the course during the free trial period; then we approach them and give them a free one-on-one coaching session. I think students who cancel early tend to be either lack of experience with online learning or lack of motivation to keep going forward, so it is important for us to identify them, actively approach and give them orientation, and encourage them. The intervention may affect human resources, so the duration of a free coaching session should be limited to 15, 20, or 30 minutes depending on individual cases. I believe the intervention, if carried out effectively, can increase retention rate, so I would like to conduct an A/B test to verify my idea. I will randomly assign 50% of the visitors to control group and the other 50% to experimental group. 
 
 `Null hypothesis: free one-on-one coaching session does not increase retention by a practically significant amount.`
 
 `Unit of diversion: user-id. Because a free one-on-one coaching session is given not to visitors but to those who are in the free trial period, and we want the experiment to be stable, that is we want to make sure only those in experimental group receive a free one-on-one coaching session.` 
 
-`Evaluation metric: net conversion. If the net conversion is practically and statistically significant, we can conclude that the launch of the experiment will increase the revenue.`
+`Invariant metric: the number of user-id. Because the experiment does not impact this metric`
 
-Then we compare the results from experimental group and control group to see whether we should luanch the experiment or not. If retention is positive and practically significant, we can launch the experiment.
+`Evaluation metric: retention. If the retention is practically and statistically significant, we can conclude that the launch of the experiment will increase the revenue.`
+
+Then we compare the results from experimental group and control group to see whether we should launch the experiment or not. If retention is positive and practically significant, we can launch the experiment.
 
 ## Reference
 - Ideate and Hypothesize https://help.optimizely.com/Ideate_and_Hypothesize
