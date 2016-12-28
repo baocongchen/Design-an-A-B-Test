@@ -166,13 +166,13 @@ Based on the results that I get, I think the new design for "Start free trial" s
 
 We want to make some changes that can positively impact the net conversion rate. First, we need to detect the patterns of those who are likely to cancel the course during the free trial period; then we approach them and give them a free one-on-one coaching session. I think students who cancel early tend to be either lack of experience with online learning or lack of motivation to keep going forward, so it is important for us to identify them, actively approach and give them orientation, and encourage them. The intervention may affect human resources, so the duration of a free coaching session should be limited to 15, 20, or 30 minutes depending on individual cases. I believe the intervention, if carried out effectively, can increase retention rate, so I would like to conduct an A/B test to verify my idea. I will randomly assign 50% of the visitors to control group and the other 50% to experimental group. 
 
-`Null hypothesis: free one-on-one coaching session does not increase retention by a practically significant amount.`
+- Null hypothesis: free one-on-one coaching session does not increase retention by a practically significant amount.
 
-`Unit of diversion: user-id. Because a free one-on-one coaching session is given not to visitors but to those who are in the free trial period, and we want the experiment to be stable, that is we want to make sure only those in experimental group receive a free one-on-one coaching session.` 
+- Unit of diversion: user-id. Because a free one-on-one coaching session is given not to visitors but to those who are in the free trial period, and we want the experiment to be stable, that is we want to make sure only those in experimental group receive a free one-on-one coaching session.
 
-`Invariant metric: the number of user-id. Because the experiment does not impact this metric`
+- Invariant metric: the number of user-id. Because the experiment does not impact this metric
 
-`Evaluation metric: retention. If the retention is practically and statistically significant, we can conclude that the launch of the experiment will increase the revenue.`
+- Evaluation metric: retention. If the retention is practically and statistically significant, we can conclude that the launch of the experiment will increase the revenue.
 
 Then we compare the results from experimental group and control group to see whether we should launch the experiment or not. If retention is positive and practically significant, we can launch the experiment.
 
